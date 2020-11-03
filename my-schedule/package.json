@@ -1,5 +1,5 @@
 {
-  "name": "react-google-sheets",
+  "name": "my-schedule",
   "version": "0.1.0",
   "private": true,
   "web": "npm start",
@@ -10,6 +10,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.5.2",
+    "express": "^4.17.1",
     "firebase": "^8.0.0",
     "gh-pages": "^2.0.1",
     "material-table": "^1.68.0",
