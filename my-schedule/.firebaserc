@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "my-schedule-b17d4"
+    "default": "my-schedule-b17d4",
+    "my-schedule": "my-schedule-4239d"
   }
 }

@@ -1,73 +1,35 @@
 import React from 'react';
-import Tabletop from "tabletop";
+import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
-import Table from './Table';
-import { signInWithGoogle } from './services/firebase';
-import { auth } from './services/firebase';
+import GetName from './GetName';
 
-class App extends React.Component {
+// App.js -> GetName.js -> Table.js
+function App() {
+  const {
+    isLoading,
+    isAuthenticated,
+    error,
+    user,
+    loginWithRedirect,
+  } = useAuth0();
 
-  constructor() {
-    super();
-
-    this.state = {
-      currentUser: null,
-      data: []
-    };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Oops... {error.message}</div>;
   }
 
-  unsubscribeFromAuth = null;
-
-  componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user });
-    });
-    
-    Tabletop.init({
-      key: '1R4GVfo2urpejFWNIHqABghlxady-qzRtIrpMotlaW4I',
-      callback: googleData => {
-          this.setState({
-          data: googleData
-          })
-      },
-      simpleSheet: true
-      })
-  }
-
-  get_name(){
-    let name=""
-    this.state.data.map(obj => {
-      if (obj.Email == this.state.currentUser.email) {
-        name=obj.Name 
-      }
-    })
-    return name
-  }
-
-  render() {
-    const {data} = this.state.data;
-
+  if (isAuthenticated) {
     return (
       <div>
-        {
-          this.state.currentUser ?
-  
-          (
-            <div>
-              <div>Name: {this.state.currentUser.displayName}</div>
-              <div>Email: {this.state.currentUser.email}</div>
-              {console.log(this.get_name())}
-              <Table name={this.get_name()}/>
-            </div>
-          ):
-          
-          <button onClick={signInWithGoogle}>SIGN IN WITH GOOGLE</button>
-
-        }
-      </div >
+        Hai, {user.name}{'!'}
+        <GetName name={user.name}/>
+      </div>
     );
+  } else {
+    return <button onClick={loginWithRedirect}>Log in</button>;
   }
 }
-
 
 export default App;

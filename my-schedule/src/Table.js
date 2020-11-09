@@ -1,7 +1,5 @@
-import React, { useEffect} from "react";
+import React from "react";
 import { forwardRef } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Tabletop from 'tabletop';
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
@@ -19,7 +17,8 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-
+import moment from "moment";
+import Moment from 'react-moment';
 import './App.css';
 
 const tableIcons = {
@@ -66,32 +65,57 @@ class Table extends React.Component {
         simpleSheet: true
         })
     }
+    
+    calcTime(offset) {
+        // create Date object for current location
+        var d = new Date();
+    
+        // convert to msec
+        // subtract local time zone offset
+        // get UTC time in msec
+        var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    
+        // create new Date object for different city
+        // using supplied offset
+        var nd = new Date(utc + (3600000*offset));
+    
+        // return time as a string
+        return nd.toLocaleString();
+    }
 
+    
     render() {
         const { data } = this.state;
-        
-        
+    
         var someData = []
-        
-        
+        let date=""
         return (
-        <div>   
+        <div>  
+            <Moment format="MM/DD/YYYY, HH:mm:ss">{this.calcTime("+7")}</Moment>
             <div>
             {
                 data.map(obj => {
                 if (obj.Sales.trim().toLowerCase() === this.props.name.trim().toLowerCase() && obj.Tanggal !== "" && obj.Dokter !== "") {
-                    someData.push({
-                    nama: obj.Sales,
-                    kode: obj.Dokter,
-                    tanggal: obj.Tanggal,
-                    waktu: obj.Waktu,
-                    status: obj.Status,
-                    code: obj.Code,
-                    checkpointCode: obj.CheckpointCode,
-                    waktuCheckpoint: obj.WaktuCheckpoint,
-                    keterangan: obj.Keterangan,
-                    reschedDetail: obj.ReschedDetail,
-                    })      
+                    //console.log(obj["Tanggal Masuk Email (Jangan masuk website)"])
+                    //console.log(this.calcTime("+7"))
+                    var ms = moment(this.calcTime("+7"),"MM/DD/YYYY, HH:mm:ss").diff(moment(obj["Tanggal Masuk Email (Jangan masuk website)"],"DD/MM/YYYY HH:mm:ss"));
+                    var d = moment.duration(ms);
+                    //var s = Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss");
+                    //console.log(d.asHours())
+                    if(d.asHours() <="24"){
+                        someData.push({
+                            nama: obj.Sales,
+                            kode: obj.Dokter,
+                            tanggal: obj.Tanggal,
+                            waktu: obj.Waktu,
+                            status: obj.Status,
+                            code: obj.Code,
+                            checkpointCode: obj.CheckpointCode,
+                            waktuCheckpoint: obj.WaktuCheckpoint,
+                            keterangan: obj.Keterangan,
+                            reschedDetail: obj.ReschedDetail,
+                        })      
+                    }
                 }
                 })
             }
