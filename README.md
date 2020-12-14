@@ -7,9 +7,9 @@ Development server:
 npm run dev
 
 Build server:
-npm run build
-firebase init
-firebase deploy
+npm run build. 
+firebase init. 
+firebase deploy. 
 
 Check dependency:
 npm-check
